@@ -3,6 +3,9 @@ var router = express.Router();
 var model = require('../model');
 /* GET users listing. */
 
+var multiparty = require('multiparty')
+var fs = require('fs');
+
 
 router.post('/add',function(req,res,next){
   var id = parseInt(req.body.id);
@@ -29,7 +32,7 @@ router.post('/add',function(req,res,next){
   }else{
     var data = {
       title:req.body.title,
-      contentL:req.body.content,
+      content:req.body.content,
       id:Date.now(),
       username:req.session.username
     }
@@ -63,5 +66,26 @@ router.get('/delete',function(req,res,next){
   })
 })
 
+//图片上传
+router.post('/upload',function(req,res,next){
+  var form = new multiparty.Form();
+  form.parse(req,function(err,fields,files){
+    if(err){
+      console.log('上传失败',err)
+    }else{
+      console.log('上传成功',files);
+      var file = files.filedata[0];
+
+      var rs = fs.createReadStream(file.path);
+      var newPath= '/uploads/'+file.originalFilename;
+      var ws = fs.createWriteStream('./public'+newPath);
+      rs.pipe(ws);
+      ws.on('close',function(){
+        console.log('文件上传成功')
+        res.send({err:'',msg:newPath})
+      })
+    }
+  })
+})
 
 module.exports = router;

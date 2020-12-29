@@ -4,6 +4,7 @@
 <head>
   <title>首页</title>
   <%- include head %>
+<link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 
 <body>
@@ -19,7 +20,6 @@
           </span>
           <span>
             <a href="/detail?id=<%= item.id%>&"><%= item.title %></a>
-
           </span>
           <span>
             <%= item.time %>
